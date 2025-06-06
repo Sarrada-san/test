@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+#include <cmath>
+
+using namespace std;
+
+int firstFitDecreasing(const vector<int>& items, int capacity) {
+    vector<int> bins;
+
+    for (int item : items) {
+        bool placed = false;
+        for (int& bin : bins) {
+            if (bin + item <= capacity) {
+                bin += item;
+                placed = true;
+                break;
+            }
+        }
+        if (!placed) {
+            bins.push_back(item);
+        }
+    }
+    return bins.size();
+}
+
+int main() {
+    // Exemplo de entrada
+    vector<int> volumes = {10, 20, 30, 40, 15, 25, 35};
+    int warehouseCapacity = 50; // Carga X
+    int truckCapacity = 100;    // Carga Y
+
+    // Ordenar decrescentemente
+    sort(volumes.rbegin(), volumes.rend());
+
+    // Cálculo de armazéns usando First-Fit Decreasing
+    int numWarehouses = firstFitDecreasing(volumes, warehouseCapacity);
+
+    // Cálculo de carga total
+    int totalVolume = accumulate(volumes.begin(), volumes.end(), 0);
+
+    // Cálculo de caminhões necessários
+    int numTrucks = ceil(static_cast<double>(totalVolume) / truckCapacity);
+
+    cout << "Número mínimo de armazéns necessários: " << numWarehouses << endl;
+    cout << "Número mínimo de caminhões necessários: " << numTrucks << endl;
+
+    return 0;
+}
